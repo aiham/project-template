@@ -4,6 +4,10 @@
 
 Generate a project based on a directory of template files and corresponding template values.
 
+## Requirements
+
+- Node JS v6+
+
 ## Install
 
 ```sh
