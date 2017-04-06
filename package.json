@@ -1,0 +1,23 @@
+{
+  "name": "project-template",
+  "version": "1.0.0",
+  "description": "Generate a project based on a directory of template files and corresponding template values",
+  "main": "src/index.js",
+  "scripts": {
+    "example": "node example/index.js"
+  },
+  "keywords": [
+    "generate",
+    "project",
+    "template",
+    "directory"
+  ],
+  "author": "Aiham Hammami <aiham@aiham.net>",
+  "license": "MIT",
+  "dependencies": {
+    "ect": "^0.5.9",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "recursive-readdir": "^2.1.1"
+  }
+}
