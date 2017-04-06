@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const promisify = require('../src/promisify');
 const readFile = promisify(fs.readFile);
-const readTextFile = filePath => readFile(filePath, { encoding: 'utf8' });
+const textOptions = { encoding: 'utf8' };
 
 const templatePath = path.join(__dirname, 'templates');
 const buildPath = path.join(__dirname, 'build');
@@ -41,16 +41,26 @@ projectTemplate({
     assert.strictEqual(data.split(/[\n\r]+/)[0], firstLine);
   };
 
-  return readTextFile(path.join(buildPath, 'README.md'))
+  const getFilePair = (filePath, fileOpts) => () => Promise.all([
+    readFile(path.join(buildPath, filePath), fileOpts),
+    readFile(path.join(templatePath, filePath), fileOpts),
+  ]);
+
+  return readFile(path.join(buildPath, 'README.md'), textOptions)
     .then(data => assertFirstLine(data, '# Awesome Project'))
-    .then(() => Promise.all([
-      readTextFile(path.join(buildPath, 'LICENSE')),
-      readTextFile(path.join(templatePath, 'LICENSE')),
-    ])
+    .then(getFilePair('LICENSE', textOptions))
     .then(([data1, data2]) => {
       assertFirstLine(data1, 'MIT License');
       assert.strictEqual(data1, data2);
-    }))
+    })
+    .then(getFilePair('foo/images/logo.png'))
+    .then(datas => datas.map(data => data.toString('base64')))
+    .then(([data1, data2]) => {
+      const prefix = 'iVBORw0KGgoAAAANSUhEUgAAAeAAAAHgCAIAAADytinCAAAABm';
+      assert.strictEqual(data1.length, 14312);
+      assert.strictEqual(data1.substr(0, prefix.length), prefix);
+      assert.strictEqual(data1, data2);
+    })
     .then(() => files);
 })
 .then(files => {

@@ -29,12 +29,12 @@ const projectTemplate = ({
   assert.notStrictEqual(fileExtension, '.', 'fileExtension cannot be a dot');
 
   const extensionPattern = new RegExp(`\.${fileExtension}$`);
-  const renderer = ect({
+  const templateRenderer = ect({
     root : templatePath,
     ext: `.${fileExtension}`,
   });
 
-  const render = promisify(renderer.render.bind(renderer));
+  const renderTemplate = promisify(templateRenderer.render.bind(templateRenderer));
 
   return recursiveReadDir(templatePath)
     .then(files => files.map(fullPath => {
@@ -63,14 +63,14 @@ const projectTemplate = ({
     })
     .then(files => Promise.all(files.map(([file, isTemplate]) => (
       (isTemplate ?
-        render(file, params[file]) :
-        readFile(path.join(templatePath, file), { encoding: 'utf8' }))
+        renderTemplate(file, params[file]) :
+        readFile(path.join(templatePath, file)))
           .then(data => [file, isTemplate, data])
     ))))
     .then(files => files.map(file => file.concat(path.join(buildPath, file[0]))))
     .then(files => Promise.all(files.map(
       ([file, isTemplate, data, filePath]) => mkdirp(path.dirname(filePath))
-        .then(() => writeFile(filePath, data, { encoding: 'utf8' }))
+        .then(() => writeFile(filePath, data, isTemplate ? { encoding: 'utf8' } : undefined))
         .then(() => file)
     )));
 });
