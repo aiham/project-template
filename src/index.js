@@ -18,15 +18,15 @@ const projectTemplate = ({
   buildPath,
   params = {},
 }) => Promise.resolve().then(() => {
-  assert(typeof fileExtension === 'string', 'fileExtension must be a string');
-  assert(typeof templatePath === 'string', 'templatePath must be a string');
-  assert(typeof buildPath === 'string', 'buildPath must be a string');
-  assert(params instanceof Object, 'params must be an object');
+  assert.strictEqual(typeof fileExtension, 'string', 'fileExtension must be a string');
+  assert.strictEqual(typeof templatePath, 'string', 'templatePath must be a string');
+  assert.strictEqual(typeof buildPath, 'string', 'buildPath must be a string');
+  assert(params && typeof params === 'object', 'params must be an object');
 
   assert(fileExtension.length > 0, 'fileExtension must not be empty');
   assert(templatePath.length > 0, 'templatePath must not be empty');
   assert(buildPath.length > 0, 'buildPath must not be empty');
-  assert(fileExtension !== '.', 'fileExtension cannot be a dot');
+  assert.notStrictEqual(fileExtension, '.', 'fileExtension cannot be a dot');
 
   const extensionPattern = new RegExp(`\.${fileExtension}$`);
   const renderer = ect({
