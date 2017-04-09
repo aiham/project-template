@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const ect = require('ect');
 const difference = require('lodash/difference');
+const intersection = require('lodash/intersection');
 const recursiveReadDirCb = require('recursive-readdir');
 const mkdirpCb = require('mkdirp');
 
@@ -53,6 +54,19 @@ const projectTemplate = ({
       file.replace(extensionPattern, ''),
       extensionPattern.test(file)
     ]))
+    .then(files => {
+      const templateFiles = files.filter(([file, isTemplate]) => isTemplate)
+        .map(([file]) => file);
+      const ordinaryFiles = files.filter(([file, isTemplate]) => !isTemplate)
+        .map(([file]) => file);
+      const invalidFiles = intersection(templateFiles, ordinaryFiles);
+      if (invalidFiles.length) {
+        throw new Error(
+          `The following files are invalid as there are also templates with the same filename: ${invalidFiles.join(', ')}`
+        );
+      }
+      return files;
+    })
     .then(files => files.filter(([file]) => ignoreFiles.indexOf(file) < 0))
     .then(files => {
       const templateFiles = files.filter(([file, isTemplate]) => isTemplate)

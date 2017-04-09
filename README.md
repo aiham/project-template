@@ -50,6 +50,7 @@ projectTemplate({
 - Directory structure of files in `templatePath` is maintained in `buildPath`
 - All files in `templatePath` with `fileExtension` must be included in `params`
 - Files in `templatePath` without `fileExtension` are just copied over to `buildPath`
+- You cannot have two files with the same file path where one has `fileExtension` and the other doesn't
 
 ## API
 
