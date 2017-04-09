@@ -48,7 +48,7 @@ const projectTemplate = ({
         file = file.substr(templatePath.length);
       }
 
-      return file.replace(/^\/+/, '');
+      return file.replace(/^[\/\\]+/, '');
     }))
     .then(files => files.map(file => [
       file.replace(extensionPattern, ''),
