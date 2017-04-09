@@ -17,16 +17,19 @@ const projectTemplate = ({
   templatePath,
   buildPath,
   params = {},
+  ignoreFiles = [],
 }) => Promise.resolve().then(() => {
   assert.strictEqual(typeof fileExtension, 'string', 'fileExtension must be a string');
   assert.strictEqual(typeof templatePath, 'string', 'templatePath must be a string');
   assert.strictEqual(typeof buildPath, 'string', 'buildPath must be a string');
   assert(params && typeof params === 'object', 'params must be an object');
+  assert(Array.isArray(ignoreFiles), 'ignoreFiles must be an array');
 
   assert(fileExtension.length > 0, 'fileExtension must not be empty');
   assert(templatePath.length > 0, 'templatePath must not be empty');
   assert(buildPath.length > 0, 'buildPath must not be empty');
   assert.notStrictEqual(fileExtension, '.', 'fileExtension cannot be a dot');
+  assert(ignoreFiles.every(file => typeof file === 'string'), 'ignoreFiles must only contain strings');
 
   const extensionPattern = new RegExp(`\.${fileExtension}$`);
   const templateRenderer = ect({
@@ -50,6 +53,7 @@ const projectTemplate = ({
       file.replace(extensionPattern, ''),
       extensionPattern.test(file)
     ]))
+    .then(files => files.filter(([file]) => ignoreFiles.indexOf(file) < 0))
     .then(files => {
       const templateFiles = files.filter(([file, isTemplate]) => isTemplate)
         .map(([file]) => file);

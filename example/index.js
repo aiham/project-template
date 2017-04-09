@@ -25,6 +25,9 @@ projectTemplate({
       name: 'World',
     },
   },
+  ignoreFiles: [
+    'foo/bar/description-partial.md',
+  ],
 })
 .then(files => {
   const config = require(path.join(buildPath, 'foo/config.json'));
