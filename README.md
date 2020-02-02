@@ -1,3 +1,5 @@
+**Note:** Not maintained
+
 # project-template
 
 [![npm version](https://badge.fury.io/js/project-template.svg)](https://badge.fury.io/js/project-template)
